@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SoftBox.DAL.Repository
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        IQueryable<TEntity> Get();
+        Task<TEntity> GetByIdAsync(int id);
 
         Task<IEnumerable<TEntity>> GetAllAsync();
 
