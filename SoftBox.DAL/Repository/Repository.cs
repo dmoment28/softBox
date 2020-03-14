@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace SoftBox.DAL.Repository
 {
@@ -15,14 +13,14 @@ namespace SoftBox.DAL.Repository
 
         private readonly DbSet<TEntity> _dbSet;
 
-        public IQueryable<TEntity> Get()
+        public async Task<TEntity> GetByIdAsync(int id)
         {
-            return _dbSet;
+            return await _dbSet.FindAsync(id);
         }
 
-        public Task<IEnumerable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            throw new Exception();
+            return await _dbSet.ToListAsync();
         }
 
         public void Add(TEntity entity)
