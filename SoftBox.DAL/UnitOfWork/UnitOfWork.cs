@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SoftBox.DAL.Repository;
+using System;
 using System.Threading.Tasks;
 
 namespace SoftBox.DAL.UnitOfWork
@@ -26,6 +27,7 @@ namespace SoftBox.DAL.UnitOfWork
         public void Dispose()
         {
             _context.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

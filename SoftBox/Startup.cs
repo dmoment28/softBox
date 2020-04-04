@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SoftBox.DAL;
 
-namespace SoftBox
+namespace SoftBox.WEB
 {
     public class Startup
     {
