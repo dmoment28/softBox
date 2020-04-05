@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace SoftBox.WEB.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/accounts")]
     public class AccountsController : ControllerBase
@@ -22,7 +21,7 @@ namespace SoftBox.WEB.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
-
+            var user = _accountService.
         }
     }
 }

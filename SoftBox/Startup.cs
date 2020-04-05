@@ -6,6 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SoftBox.DAL;
+using SoftBox.BLL.Services.Implementation;
+using SoftBox.BLL.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using SoftBox.DAL.UnitOfWork;
 
 namespace SoftBox.WEB
 {
@@ -23,12 +28,34 @@ namespace SoftBox.WEB
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(connection));
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        // With SSL sertificate toggle to True
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = AuthorizationOptions.ISSUER,
+                            ValidateAudience = true,
+                            ValidAudience = AuthorizationOptions.AUDIENCE,
+                            ValidateLifetime = true,
+                            IssuerSigningKey = AuthorizationOptions.GetSymmetricSecurityKey(),
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
 
             services.AddControllersWithViews();
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>(provider =>
+              new UnitOfWork(provider.GetRequiredService<ApplicationContext>()));
+
+            services.AddTransient<IAccountService, AccountService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -51,6 +78,9 @@ namespace SoftBox.WEB
             }
 
             app.UseRouting();
+
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseEndpoints(endpoints =>
             {

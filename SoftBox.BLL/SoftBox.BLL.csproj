@@ -8,4 +8,8 @@
     <ProjectReference Include="..\SoftBox.DAL\SoftBox.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\" />
+  </ItemGroup>
+
 </Project>

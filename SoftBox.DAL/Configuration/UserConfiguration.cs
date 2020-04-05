@@ -13,7 +13,7 @@ namespace SoftBox.DAL.Configuration
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Login).IsRequired().HasMaxLength(30);
-            builder.Property(x => x.PasswordHash).IsRequired().HasMaxLength(500);
+            builder.Property(x => x.Password).IsRequired().HasMaxLength(500);
             builder.HasOne(x => x.UserProfile).WithOne(x => x.User).HasForeignKey<UserProfile>(x => x.UserId);
         }
     }
