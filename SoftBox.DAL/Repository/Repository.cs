@@ -2,31 +2,66 @@
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Linq.Expressions;
+using System;
 
 namespace SoftBox.DAL.Repository
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
+        private readonly DbSet<TEntity> _dbSet;
+
         public Repository(DbSet<TEntity> dbSet)
         {
             _dbSet = dbSet;
         }
 
-        private readonly DbSet<TEntity> _dbSet;
-
-        public IQueryable<TEntity> Get()
+        public async Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
-            return _dbSet;
+            var query = GetAll();
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<TEntity> GetAsync(int id)
+        public async Task<TEntity> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
-            return await _dbSet.FindAsync(id);
+            var query = GetAll();
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return await query.SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
+            var query = GetAll();
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public IQueryable<TEntity> GetAll()
+        {
+            return _dbSet.AsQueryable();
+        }
+
+        public void Remove(TEntity entity)
+        {
+            _dbSet.Remove(entity);
+        }
+
+        public void RemoveRange(IEnumerable<TEntity> entities)
+        {
+            _dbSet.RemoveRange(entities);
         }
 
         public void Add(TEntity entity)
@@ -47,22 +82,6 @@ namespace SoftBox.DAL.Repository
         public void UpdateRange(IEnumerable<TEntity> entities)
         {
             _dbSet.UpdateRange(entities);
-        }
-
-        public void Delete(int id)
-        {
-            var entity = _dbSet.Find(id);
-            _dbSet.Remove(entity);
-        }
-
-        public void Delete(TEntity entity)
-        {
-            _dbSet.Remove(entity);
-        }
-
-        public void DeleteRange(IEnumerable<TEntity> entities)
-        {
-            _dbSet.RemoveRange(entities);
         }
     }
 }

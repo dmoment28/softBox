@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace SoftBox
+namespace SoftBox.WEB
 {
     public class Program
     {
