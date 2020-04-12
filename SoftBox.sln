@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftBox.WEB", "SoftBox\Soft
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftBox.DAL", "SoftBox.DAL\SoftBox.DAL.csproj", "{72B88F53-700F-4F2F-9FF8-F6FEFA08AF66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftBox.BLL", "SoftBox.BLL\SoftBox.BLL.csproj", "{F78CC1BD-6EF4-4138-B00C-7ED80A9969FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftBox.BLL", "SoftBox.BLL\SoftBox.BLL.csproj", "{F78CC1BD-6EF4-4138-B00C-7ED80A9969FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

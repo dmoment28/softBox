@@ -476,6 +476,7 @@ ServiceFabricBackup/
 
 # Telerik's JustMock configuration file
 *.jmconfig
+appsettings.json
 
 # BizTalk build output
 *.btp.cs

@@ -6,56 +6,73 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SoftBox.DAL;
-using SoftBox.BLL.Services.Implementation;
+using SoftBox.BLL.Services.Implementations;
 using SoftBox.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SoftBox.DAL.UnitOfWork;
+using AutoMapper;
+using System.Text;
+using SoftBox.BLL.Helper;
+using FluentValidation.AspNetCore;
+using System.Reflection;
 
 namespace SoftBox.WEB
 {
     public class Startup
     {
+        public readonly IConfiguration Configuration;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(connection));
-            
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        // With SSL sertificate toggle to True
-                        options.RequireHttpsMetadata = false;
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidIssuer = AuthorizationOptions.ISSUER,
-                            ValidateAudience = true,
-                            ValidAudience = AuthorizationOptions.AUDIENCE,
-                            ValidateLifetime = true,
-                            IssuerSigningKey = AuthorizationOptions.GetSymmetricSecurityKey(),
-                            ValidateIssuerSigningKey = true,
-                        };
-                    });
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddControllersWithViews();
+            services.AddCors();
+            services.AddControllersWithViews().AddFluentValidation(opt =>
+            {
+                opt.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            });
+            services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            services.AddTransient<IUnitOfWork, UnitOfWork>(provider =>
-              new UnitOfWork(provider.GetRequiredService<ApplicationContext>()));
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
-            services.AddTransient<IAccountService, AccountService>();
+            #region Services
+            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(c => c.AddProfile<AutoMap>(), typeof(Startup));
+            services.AddTransient<IUnitOfWork, UnitOfWork>(provider =>
+                new UnitOfWork(provider.GetRequiredService<ApplicationContext>()));
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            #endregion
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -78,9 +95,9 @@ namespace SoftBox.WEB
             }
 
             app.UseRouting();
-
-
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(builder => builder.AllowAnyOrigin());
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -88,7 +105,6 @@ namespace SoftBox.WEB
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
-
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

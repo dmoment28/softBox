@@ -7,12 +7,12 @@ namespace SoftBox.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private readonly DbContext _context;
+
         public UnitOfWork(DbContext context)
         {
             _context = context;
         }
-
-        private readonly DbContext _context;
 
         public IRepository<TEntity> Repository<TEntity>() where TEntity : class
         {

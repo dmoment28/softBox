@@ -9,12 +9,12 @@ namespace SoftBox.DAL.Configuration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("Users");
-
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            builder.Property(x => x.Login).IsRequired().HasMaxLength(30);
+            builder.HasIndex(x => x.Login).IsUnique();
+            builder.Property(x => x.Login).HasMaxLength(50);
             builder.Property(x => x.Password).IsRequired().HasMaxLength(500);
-            builder.HasOne(x => x.UserProfile).WithOne(x => x.User).HasForeignKey<UserProfile>(x => x.UserId);
+            builder.HasOne(x => x.UserProfile).WithOne(x => x.User).HasForeignKey<UserProfile>(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

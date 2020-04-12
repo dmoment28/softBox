@@ -9,8 +9,8 @@ using SoftBox.DAL;
 namespace SoftBox.DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200404233115_ChangedColumnName")]
-    partial class ChangedColumnName
+    [Migration("20200412114845_MainMigration")]
+    partial class MainMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,6 +19,22 @@ namespace SoftBox.DAL.Migrations
                 .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("SoftBox.DAL.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
 
             modelBuilder.Entity("SoftBox.DAL.Entities.User", b =>
                 {
@@ -37,6 +53,9 @@ namespace SoftBox.DAL.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
@@ -44,6 +63,8 @@ namespace SoftBox.DAL.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.HasIndex("UserProfileId")
                         .IsUnique();
@@ -78,6 +99,12 @@ namespace SoftBox.DAL.Migrations
 
             modelBuilder.Entity("SoftBox.DAL.Entities.User", b =>
                 {
+                    b.HasOne("SoftBox.DAL.Entities.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("SoftBox.DAL.Entities.UserProfile", "UserProfile")
                         .WithOne("User")
                         .HasForeignKey("SoftBox.DAL.Entities.User", "UserProfileId")
