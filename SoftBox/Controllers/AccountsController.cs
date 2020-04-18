@@ -37,6 +37,8 @@ namespace SoftBox.WEB.Controllers
 
         [Authorize]
         [HttpGet("test")]
-        public string test() { return "1"; }
+        public string test() { 
+            return "1"; 
+        }
     }
 }

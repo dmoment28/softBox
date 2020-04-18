@@ -7,8 +7,8 @@ namespace SoftBox.WEB.Validators.Accounts
     {
         public AuthenticationViewModelValidator()
         {
-            RuleFor(x => x.Login).NotNull().NotEmpty().MinimumLength(3).MaximumLength(50);
-            RuleFor(x => x.Password).NotNull().NotEmpty().MinimumLength(3).MaximumLength(500);
+            RuleFor(x => x.Login).NotNull().NotEmpty().MinimumLength(3).MaximumLength(50).WithMessage("Invalid Login");
+            RuleFor(x => x.Password).NotNull().NotEmpty().MinimumLength(3).MaximumLength(500).WithMessage("Invalid Password");
         }
     }
 }

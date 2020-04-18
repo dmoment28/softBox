@@ -8,14 +8,13 @@ using Microsoft.Extensions.Hosting;
 using SoftBox.DAL;
 using SoftBox.BLL.Services.Implementations;
 using SoftBox.BLL.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using SoftBox.DAL.UnitOfWork;
 using AutoMapper;
 using System.Text;
 using SoftBox.BLL.Helper;
 using FluentValidation.AspNetCore;
 using System.Reflection;
+using SoftBox.WEB.MIddleware;
 
 namespace SoftBox.WEB
 {
@@ -46,25 +45,10 @@ namespace SoftBox.WEB
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
+
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+            services.TokenValidation(key);
 
             #region Services
             services.AddAutoMapper(typeof(Startup));
