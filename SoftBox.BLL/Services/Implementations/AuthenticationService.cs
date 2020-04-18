@@ -40,7 +40,7 @@ namespace SoftBox.BLL.Services.Implementations
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim(ClaimTypes.Name, user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.Login.ToString()),
                         new Claim(ClaimTypes.Role, user.RoleId.ToString())
                     }),
                     Expires = DateTime.UtcNow.AddDays(1),
