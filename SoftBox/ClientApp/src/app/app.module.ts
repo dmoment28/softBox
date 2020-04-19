@@ -4,6 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { Routes, RouterModule } from '@angular/router';
+import { LoginComponent } from './common/login.component/login.component';
+import { DialogComponent } from './common/dialog/dialog.component';
+import { DialogCreator } from './common/dialog/dialog.component.creator';
+import { DialogService } from './common/dialog/dialog.service';
+import { TokenInterceptor } from './common/services/token.interceptor';
+import { AuthService } from './common/services/auth.service';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' }
@@ -11,15 +17,23 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    DialogComponent,
+    DialogCreator
+  ],
+  entryComponents:[
+    LoginComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    HttpClientModule
   ],
-  providers: [],
+  providers: [DialogService,
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true, deps:[AuthService] }],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })

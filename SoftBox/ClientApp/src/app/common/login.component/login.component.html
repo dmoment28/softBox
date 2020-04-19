@@ -1,0 +1,16 @@
+<div>
+  <div>
+    <label name="login">Login</label>
+    <input class="login" type="text" for="login" [(ngModel)]="login">
+  </div>
+  <div>
+    <label name="password">Password</label>
+    <input class="login" type="password" for="password" [(ngModel)]="password">
+  </div>
+  <div>
+    <label *ngIf="!isAuthSuccess">Login or Password invalid</label>
+  </div>
+  <div class="btn-container">
+    <button (click)="LogIn()">LogIn</button>
+  </div>
+</div>

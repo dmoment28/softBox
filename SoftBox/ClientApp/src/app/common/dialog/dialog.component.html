@@ -1,0 +1,10 @@
+<div class="overlay" *ngIf="dialogService.modals.length > 0" style="z-index: 1000;"></div>
+
+<div class="modal" *ngFor="let editor of dialogService.modals" 
+    [ngStyle]="{'z-index': editor.zIndex}">
+    <div *ngIf="editor.title != null && editor.title != ''" class="title">{{editor.title}}</div>
+
+    <div class="modalContainer">
+        <app-dialog-creator [editor]="editor"></app-dialog-creator>
+    </div>
+</div>
