@@ -1,3 +1,14 @@
 <body>
-  <h3>Welcome to <i>SoftBox</i></h3>
+  <div class="nav">
+    <div class="nav-logo">
+      <i>SoftBox</i>
+    </div>
+    <div class="nav-btn-container">
+      <button class="nav-btn" (click)="OpenLogIn()">Log In</button>
+    </div>
+  </div>
+  <div class="main">
+    <router-outlet></router-outlet>
+  </div>
+  <app-dialog></app-dialog>
 </body>

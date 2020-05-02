@@ -40,6 +40,7 @@ namespace SoftBox.BLL.Services.Implementations
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Name, user.Login.ToString()),
                         new Claim(ClaimTypes.Role, user.RoleId.ToString())
                     }),
@@ -54,6 +55,24 @@ namespace SoftBox.BLL.Services.Implementations
             catch (Exception exception)
             {
                 throw new Exception($"Error when creating token for user: {login}", exception);
+            }
+        }
+
+        public async Task<User> GetUserById(int userId)
+        {
+            try
+            {
+                var user = await _unitOfWork.Repository<User>().GetSingleOrDefaultAsync(x => x.Id == userId);
+                if(user == null)
+                {
+                    return null;
+                }
+
+                return user.WithoutPassword();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error when getting user with id: {userId}", exception);
             }
         }
     }
