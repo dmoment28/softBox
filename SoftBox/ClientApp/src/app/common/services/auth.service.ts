@@ -15,6 +15,7 @@ export class AuthService {
     LogIn(login: string, password: string): Promise<boolean> {
         return this.httpClient.post("api/accounts/login", { Login: login, Password: password }).toPromise().then((result: User) => {
             AuthService.user = result;
+            this.SetupToken(result.token);
             return true;
         },
             (result: any) => { return false });
@@ -24,10 +25,26 @@ export class AuthService {
         if (AuthService.user) {
             return AuthService.user.token;
         }
-        return "";
+        return localStorage.getItem("apiToken");
     }
 
     IsUserLogedIn() {
-        return AuthService.user;
+        if(AuthService.user){
+            return AuthService.user;
+        }
+        return localStorage.getItem("apiToken");
+    }
+
+    SetupToken(token: string){
+        localStorage.setItem("apiToken", token);
+    }
+
+    Init(){
+        return this.httpClient.get("api/accounts/GetCurrentUser").toPromise().then((res: User) => {
+            AuthService.user = res;
+            if( res != null ){
+                AuthService.user.token = localStorage.getItem("apiToken");
+            }
+        });
     }
 }

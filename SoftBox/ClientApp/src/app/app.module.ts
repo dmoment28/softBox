@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
@@ -14,6 +14,10 @@ import { AuthService } from './common/services/auth.service';
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
+
+export function initApp(authService :AuthService){
+  return () => authService.Init();
+}
 
 @NgModule({
   declarations: [
@@ -33,7 +37,8 @@ const routes: Routes = [
     HttpClientModule
   ],
   providers: [DialogService,
-    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true, deps:[AuthService] }],
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true, deps:[AuthService] },
+    { provide: APP_INITIALIZER, useFactory: initApp, deps: [AuthService], multi: true}],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })
