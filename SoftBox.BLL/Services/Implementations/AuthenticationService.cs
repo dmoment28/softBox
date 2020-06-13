@@ -24,7 +24,7 @@ namespace SoftBox.BLL.Services.Implementations
             _appSettings = appSettings.Value;
         }
 
-        public async Task<User> Authenticate(string login, string password)
+        public async Task<User> AuthenticateAsync(string login, string password)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace SoftBox.BLL.Services.Implementations
             }
         }
 
-        public async Task<User> GetUserById(int userId)
+        public async Task<User> GetUserByIdAsync(int userId)
         {
             try
             {

@@ -1,4 +1,4 @@
-.login{
+.login {
     width: 100%;
     border: 1px solid #999999;
     border-radius: 3px;
@@ -9,4 +9,9 @@
     -ms-border-radius: 3px;
     -o-border-radius: 3px;
     margin: 5px 0px 5px 0px;
+}
+
+.btn-container {
+    padding: 10px;
+    float: right;
 }

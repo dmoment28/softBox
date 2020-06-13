@@ -1,4 +1,6 @@
-﻿namespace SoftBox.DAL.Entities
+﻿using System.Collections.Generic;
+
+namespace SoftBox.DAL.Entities
 {
     public class User
     {
@@ -17,5 +19,7 @@
         public int RoleId { get; set; }
 
         public virtual Role Role { get; set; }
+
+        public virtual ICollection<Resource> Resources { get; set; }
     }
 }

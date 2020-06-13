@@ -52,7 +52,7 @@ export class DialogService{
                 this.modals[i].zIndex = this.BASE_Z_INDEX + i;
             }
 
-            if (this.modals.length > 0){
+            if (this.modals.length > 0) {
                 this.modals[this.modals.length - 1].zIndex = this.BASE_Z_INDEX + 100;
             }
         });

@@ -11,7 +11,7 @@ namespace SoftBox.DAL.Configuration
             builder.ToTable("Roles");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            builder.Property(x => x.Name).HasMaxLength(50);
+            builder.Property(x => x.Name).IsRequired().HasMaxLength(50);
             builder.HasMany(x => x.Users).WithOne(x => x.Role).HasForeignKey(x => x.RoleId).OnDelete(DeleteBehavior.Restrict);
         }
     }
